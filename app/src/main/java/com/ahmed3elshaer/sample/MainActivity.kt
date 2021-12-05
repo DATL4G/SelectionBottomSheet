@@ -1,18 +1,25 @@
 package com.ahmed3elshaer.sample
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.ahmed3elshaer.sample.databinding.ActivityMainBinding
 import com.ahmed3elshaer.selectionbottomsheet.SelectionBuilder
-import kotlinx.android.synthetic.main.activity_main.*
+import com.ahmed3elshaer.selectionbottomsheet.selectionBottomSheet
 
 class MainActivity : AppCompatActivity() {
+
+    private val binding: ActivityMainBinding by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             renderSelectionSheet()
         }
     }
@@ -28,24 +35,22 @@ class MainActivity : AppCompatActivity() {
             )
         //start using the Builder for the BottomSheet
         //You should pass your type of model to the Builder Class first
-        //And your activity reference
-        SelectionBuilder<SelectionModel>(this)
-            //passing the list of models that gonna be shown as the selection list
-            .list(selectionList)
-            //set the title for the BottomSheet
-            .title("Title")
-            //this is a lambda expression with the model type that you passed for the Builder
-            //and it's required for specifying(returning) which property of your model
-            //would be shown as a text for Selections
-            .itemBinder { model ->
-                model.title
+        selectionBottomSheet<SelectionModel> {
+            list(selectionList)
+            dragIndicatorColor(ContextCompat.getColor(this@MainActivity, R.color.colorWhite))
+            title("Title")
+            itemBinder { it.title }
+            confirmText("Apply")
+            itemColor(ContextCompat.getColor(this@MainActivity, R.color.colorWhite))
+            selectionColor(ContextCompat.getColor(this@MainActivity, R.color.colorGreen))
+            selectionDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_baseline_check_circle_24))
+            selectionListener {
+                Log.e("Selected: ", it.toString())
             }
-            //shows the BottomSheet and returns a lambda callback that triggers
-            //when user selects any item with selected model
-            .show {selectedModel ->
-
+            confirmListener {
+                Log.e("Confirmed: ", it.toString())
             }
-
+        }
     }
 
     data class SelectionModel(val title: String, val id: String)

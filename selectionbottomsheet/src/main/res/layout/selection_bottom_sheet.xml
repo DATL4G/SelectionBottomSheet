@@ -1,53 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/tvTitle"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/draggedIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:typeface="sans"
-        android:layout_marginTop="16dp"
-        style="@style/TextAppearance.MaterialComponents.Headline6"
-      />
+        android:visibility="gone"
+        tools:visibility="visible"
+        style="@style/Widget.DialogSelection.Indicator"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <FrameLayout
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:typeface="sans"
+        android:layout_margin="16dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/draggedIndicator"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSingleChoice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="74dp"
-            tools:itemCount="3"
-            tools:listitem="@layout/single_choice_item" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSingleChoice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        tools:itemCount="3"
+        tools:listitem="@layout/single_choice_item" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bConfirm"
-            android:layout_width="match_parent"
-            android:layout_gravity="bottom|center"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_marginEnd="16dp"
-            android:text="@string/confirm"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bConfirm"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom|center"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/confirm"
+        app:layout_constraintTop_toBottomOf="@id/rvSingleChoice"/>
 
-            />
-
-
-    </FrameLayout>
-
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

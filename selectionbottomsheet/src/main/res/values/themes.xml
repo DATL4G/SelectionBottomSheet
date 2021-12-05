@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.DialogSelection.Indicator" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="android:maxWidth">24dp</item>
+        <item name="android:minWidth">24dp</item>
+        <item name="android:maxHeight">4dp</item>
+        <item name="android:minHeight">4dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+</resources>
