@@ -5,4 +5,4 @@ before_install:
    - sdk use java 11.0.10-open
    - chmod +x gradlew
 install:
-  - ./gradlew build :{selectionbottomsheet}:publishToMavenLocal
+  - ./gradlew build :selectionbottomsheet:publishToMavenLocal
