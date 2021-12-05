@@ -38,6 +38,12 @@ dependencies {
     implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.5.2'
 }
 
+tasks.whenTaskAdded { task ->
+    if(task.name.contains("Test") || task.name.contains("test")) {
+        task.enabled = false
+    }
+}
+
 project.afterEvaluate {
     publishing {
         publications {
