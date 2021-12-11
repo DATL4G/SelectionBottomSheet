@@ -44,11 +44,18 @@ class MainActivity : AppCompatActivity() {
             itemColor(ContextCompat.getColor(this@MainActivity, R.color.colorWhite))
             selectionColor(ContextCompat.getColor(this@MainActivity, R.color.colorGreen))
             selectionDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_baseline_check_circle_24))
+            defaultItem {
+                it.id == "3"
+            }
             selectionListener {
-                Log.e("Selected: ", it.toString())
+                Log.e("Selected", it.toString())
             }
             confirmListener {
-                Log.e("Confirmed: ", it.toString())
+                if (it == null) {
+                    Log.e("Confirmed", "same as default")
+                } else {
+                    Log.e("Confirmed ", it.toString())
+                }
             }
         }
     }

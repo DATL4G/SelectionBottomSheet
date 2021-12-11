@@ -2,6 +2,7 @@ package com.ahmed3elshaer.selectionbottomsheet
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,8 @@ class SelectionBottomSheet<T> internal constructor(
     private val title: String,
     private val selectionItemBinder: (item: T) -> String,
     private val selectionCallback: (item: T) -> Unit,
-    private val confirmCallback: (item: T) -> Unit,
+    private val defaultItemBinder: ((T) -> Boolean)?,
+    private val confirmCallback: (item: T?) -> Unit,
     private val confirmText: String?,
     private val dragIndicatorColor: Int?,
     private val titleColor: Int,
@@ -64,16 +66,30 @@ class SelectionBottomSheet<T> internal constructor(
             )
         )
         val adapter = object : SelectionAdapter() {
-            override fun onBindData(item: T, itemBinding: SingleChoiceItemBinding) {
+            override fun onBindData(item: T, itemBinding: SingleChoiceItemBinding, isDefault: Boolean) {
                 itemBinding.tvName.text = selectionItemBinder(item)
-                itemBinding.tvName.setTextColor(itemColor)
                 itemBinding.ivSelected.setImageDrawable(selectionDrawable)
-                itemBinding.ivSelected.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    itemColor,
-                    BlendModeCompat.SRC_IN
-                )
+
+                if (isDefault) {
+                    itemBinding.tvName.setTextColor(selectionColor)
+                    itemBinding.ivSelected.post {
+                        itemBinding.ivSelected.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                            selectionColor,
+                            BlendModeCompat.SRC_IN
+                        )
+                    }
+                    itemBinding.ivSelected.show()
+                } else {
+                    itemBinding.tvName.setTextColor(itemColor)
+                    itemBinding.ivSelected.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                        itemColor,
+                        BlendModeCompat.SRC_IN
+                    )
+                    itemBinding.ivSelected.hide()
+                }
             }
         }
+
         dragIndicatorColor?.let {
             draggedIndicator.setCardBackgroundColor(it)
             draggedIndicator.show()
@@ -98,7 +114,12 @@ class SelectionBottomSheet<T> internal constructor(
 
         bConfirm.setOnClickListener {
             dismiss()
-            confirmCallback.invoke(currentSelection!!)
+            val isDefault = if (defaultItemBinder != null && currentSelection != null) {
+                defaultItemBinder.invoke(currentSelection!!)
+            } else {
+                false
+            }
+            confirmCallback.invoke(if (isDefault) null else currentSelection)
         }
     }
 
@@ -109,7 +130,11 @@ class SelectionBottomSheet<T> internal constructor(
             private val binding: SingleChoiceItemBinding by viewBinding()
 
             fun bindData(item: T) {
-                onBindData(item, binding)
+                val isDefault = defaultItemBinder?.invoke(item) ?: false
+                if (isDefault) {
+                    lastSelectionBinding = binding
+                }
+                onBindData(item, binding, isDefault)
             }
 
             init {
@@ -140,7 +165,7 @@ class SelectionBottomSheet<T> internal constructor(
             }
         }
 
-        abstract fun onBindData(item: T, itemBinding: SingleChoiceItemBinding)
+        abstract fun onBindData(item: T, itemBinding: SingleChoiceItemBinding, isDefault: Boolean)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VisaTypesViewHolder {
             val itemView = LayoutInflater.from(parent.context)

@@ -29,7 +29,8 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
     private var title: String = String()
     private var selectionItemBinder: (item: T) -> String = { String() }
     private var callback: (item: T) -> Unit = {}
-    private var confirmCallback: (item: T) -> Unit = {}
+    private var defaultItemBinder: ((T) -> Boolean)? = null
+    private var confirmCallback: (item: T?) -> Unit = {}
     private var confirmText: String? = null
     private var dragIndicatorColor: Int? = null
     private var titleColor: Int = Color.WHITE
@@ -84,7 +85,15 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
         this.callback = listener
     }
 
-    fun confirmListener(listener: (item: T) -> Unit) = apply {
+    fun defaultItem(item: T) = apply {
+        defaultItemBinder = { it == item }
+    }
+
+    fun defaultItem(predicate: (T) -> Boolean) = apply {
+        defaultItemBinder = predicate
+    }
+
+    fun confirmListener(listener: (item: T?) -> Unit) = apply {
         this.confirmCallback = listener
     }
 
@@ -116,6 +125,22 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
         selectionDrawable = drawable
     }
 
+    fun confirmTextColor(@ColorInt color: Int) = apply {
+        confirmTextColor = color
+    }
+
+    fun confirmDisabledTextColor(@ColorInt color: Int) = apply {
+        confirmDisabledTextColor = color
+    }
+
+    fun confirmBackgroundColor(@ColorInt color: Int) = apply {
+        confirmBackgroundColor = color
+    }
+
+    fun confirmDisabledBackgroundColor(@ColorInt color: Int) = apply {
+        confirmDisabledBackgroundColor = color
+    }
+
     /**
      * Call to initialize and show BottomSheetDialogFragment
      * @param tag is optional param, if you are not gonna use the tag eg. for
@@ -141,6 +166,7 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
         title,
         selectionItemBinder,
         callback,
+        defaultItemBinder,
         confirmCallback,
         confirmText,
         dragIndicatorColor,
