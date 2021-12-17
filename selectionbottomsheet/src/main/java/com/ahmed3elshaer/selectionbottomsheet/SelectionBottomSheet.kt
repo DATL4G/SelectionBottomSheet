@@ -33,7 +33,8 @@ class SelectionBottomSheet<T> internal constructor(
     private val confirmTextColor: Int,
     private val confirmBackgroundColor: Int,
     private val confirmDisabledTextColor: Int,
-    private val confirmDisabledBackgroundColor: Int
+    private val confirmDisabledBackgroundColor: Int,
+    private val expandState: ExpandState
 ) : BottomSheetDialogFragment() {
 
     private val binding: SelectionBottomSheetBinding by viewBinding()
@@ -46,6 +47,14 @@ class SelectionBottomSheet<T> internal constructor(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        when (expandState) {
+            ExpandState.Expanded -> dialog?.setOnShowListener { it.expand() }
+            ExpandState.ExpandOnTv -> if (requireContext().packageManager.isTelevision()) {
+                dialog?.setOnShowListener { it.expand() }
+            }
+            else -> { }
+        }
+
         return inflater.inflate(R.layout.selection_bottom_sheet, container, false)
     }
 

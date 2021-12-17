@@ -42,6 +42,7 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
     private var confirmBackgroundColor: Int = Color.WHITE
     private var confirmDisabledTextColor: Int = Color.WHITE
     private var confirmDisabledBackgroundColor: Int = Color.TRANSPARENT
+    private var expandState: ExpandState = ExpandState.Default
 
     constructor(activity: FragmentActivity) : this(activity.supportFragmentManager)
     constructor(fragment: Fragment) : this(fragment.childFragmentManager)
@@ -141,6 +142,10 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
         confirmDisabledBackgroundColor = color
     }
 
+    fun setExpandState(state: ExpandState) = apply {
+        expandState = state
+    }
+
     /**
      * Call to initialize and show BottomSheetDialogFragment
      * @param tag is optional param, if you are not gonna use the tag eg. for
@@ -178,7 +183,8 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
         confirmTextColor,
         confirmBackgroundColor,
         confirmDisabledTextColor,
-        confirmDisabledBackgroundColor
+        confirmDisabledBackgroundColor,
+        expandState
     )
 
     companion object {

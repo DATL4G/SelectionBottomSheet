@@ -1,9 +1,14 @@
 package com.ahmed3elshaer.selectionbottomsheet
 
+import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.os.Build
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 fun <T> FragmentActivity.selectionBottomSheet(builder: SelectionBuilder<T>.() -> Unit) = SelectionBuilder<T>(this).apply(builder).show()
 fun <T> FragmentActivity.selectionBottomSheet(tag: String, builder: SelectionBuilder<T>.() -> Unit) = SelectionBuilder<T>(this).apply(builder).show(tag)
@@ -22,4 +27,28 @@ internal fun View.show() {
 internal fun colorStateListOf(vararg mapping: Pair<IntArray, Int>): ColorStateList {
     val (states, colors) = mapping.unzip()
     return ColorStateList(states.toTypedArray(), colors.toIntArray())
+}
+
+internal fun PackageManager.isTelevision(): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        this.hasSystemFeature(PackageManager.FEATURE_TELEVISION) || this.hasSystemFeature(
+            PackageManager.FEATURE_LEANBACK
+        ) || this.hasSystemFeature(PackageManager.FEATURE_LEANBACK_ONLY)
+    } else {
+        this.hasSystemFeature(PackageManager.FEATURE_TELEVISION) || this.hasSystemFeature(
+            PackageManager.FEATURE_LEANBACK
+        )
+    }
+}
+
+internal fun DialogInterface.expand() {
+    if (this is BottomSheetDialog) {
+        val bottomSheet = this
+        val sheetInternal: View? = bottomSheet.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        sheetInternal?.let { sheet ->
+            sheet.post {
+                BottomSheetBehavior.from(sheet).state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+    }
 }
