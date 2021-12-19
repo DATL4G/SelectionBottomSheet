@@ -7,35 +7,40 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     tools:layout_height="56dp"
+    app:cardUseCompatPadding="false"
     app:contentPadding="0dp"
     android:padding="0dp"
-    app:cardUseCompatPadding="false"
-    android:orientation="horizontal"
-    app:cardBackgroundColor="?attr/backgroundTint">
+    android:orientation="horizontal">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:layout_gravity="center">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="start|center_vertical"
-            android:layout_weight="1"
+            tools:text="Item"
+            android:gravity="start|center_vertical"
             app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="16sp"
-            app:autoSizeMaxTextSize="18sp"/>
+            app:autoSizeMaxTextSize="18sp"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivSelected"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivSelected"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|center"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_done"
             android:visibility="gone"
-            tools:visibility="visible"/>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            tools:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
