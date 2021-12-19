@@ -69,7 +69,7 @@ class SelectionBottomSheet<T> internal constructor(
         rvSingleChoice.itemAnimator = DefaultItemAnimator()
         rvSingleChoice.addItemDecoration(
             DefaultDividerItemDecoration(
-                requireContext(),
+                context ?: activity ?: requireContext(),
                 DefaultDividerItemDecoration.VERTICAL_LIST,
                 0
             )
@@ -147,7 +147,7 @@ class SelectionBottomSheet<T> internal constructor(
             }
 
             init {
-                itemView.setOnClickListener(this)
+                binding.card.setOnClickListener(this)
             }
 
             override fun onClick(v: View?) {
@@ -177,8 +177,7 @@ class SelectionBottomSheet<T> internal constructor(
         abstract fun onBindData(item: T, itemBinding: SingleChoiceItemBinding, isDefault: Boolean)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VisaTypesViewHolder {
-            val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.single_choice_item, parent, false)
+            val itemView = LayoutInflater.from(parent.context).inflate(R.layout.single_choice_item, parent, false)
 
             return VisaTypesViewHolder(itemView)
         }

@@ -27,8 +27,11 @@ class DefaultDividerItemDecoration(
     }
 
     private fun setOrientation(orientation: Int) {
-        require(!(orientation != HORIZONTAL_LIST && orientation != VERTICAL_LIST)) { "invalid orientation" }
-        mOrientation = orientation
+        mOrientation = if (orientation != HORIZONTAL_LIST && orientation != VERTICAL_LIST) {
+            VERTICAL_LIST
+        } else {
+            orientation
+        }
     }
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -45,12 +48,11 @@ class DefaultDividerItemDecoration(
         val childCount = parent.childCount
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
-            val params = child
-                .layoutParams as RecyclerView.LayoutParams
+            val params = child.layoutParams as RecyclerView.LayoutParams
             val top = child.bottom + params.bottomMargin
-            val bottom = top + mDivider!!.intrinsicHeight
-            mDivider.setBounds(left + dpToPx(margin), top, right, bottom)
-            mDivider.draw(c!!)
+            val bottom = top + (mDivider?.intrinsicHeight ?: mDivider?.minimumHeight ?: 0)
+            mDivider?.setBounds(left + dpToPx(margin), top, right, bottom)
+            c?.let { mDivider?.draw(it) }
         }
     }
 
@@ -60,12 +62,11 @@ class DefaultDividerItemDecoration(
         val childCount = parent.childCount
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
-            val params = child
-                .layoutParams as RecyclerView.LayoutParams
+            val params = child.layoutParams as RecyclerView.LayoutParams
             val left = child.right + params.rightMargin
-            val right = left + mDivider!!.intrinsicHeight
-            mDivider.setBounds(left, top + dpToPx(margin), right, bottom - dpToPx(margin))
-            mDivider.draw(c!!)
+            val right = left + (mDivider?.intrinsicHeight ?: mDivider?.minimumHeight ?: 0)
+            mDivider?.setBounds(left, top + dpToPx(margin), right, bottom - dpToPx(margin))
+            c?.let { mDivider?.draw(it) }
         }
     }
 
@@ -76,9 +77,9 @@ class DefaultDividerItemDecoration(
         state: RecyclerView.State
     ) {
         if (mOrientation == VERTICAL_LIST) {
-            outRect[0, 0, 0] = mDivider!!.intrinsicHeight
+            outRect[0, 0, 0] = mDivider?.intrinsicHeight ?: mDivider?.minimumHeight ?: 0
         } else {
-            outRect[0, 0, mDivider!!.intrinsicWidth] = 0
+            outRect[0, 0, mDivider?.intrinsicWidth ?: mDivider?.minimumWidth ?: 0] = 0
         }
     }
 
