@@ -6,11 +6,11 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    tools:layout_height="56dp"
+    tools:layout_height="?android:attr/actionBarSize"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardUseCompatPadding="false"
     app:contentPadding="0dp"
-    android:padding="0dp"
-    android:orientation="horizontal">
+    android:padding="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
