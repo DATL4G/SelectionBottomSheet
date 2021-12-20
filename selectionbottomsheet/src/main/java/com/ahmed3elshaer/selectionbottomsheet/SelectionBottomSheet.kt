@@ -125,7 +125,7 @@ class SelectionBottomSheet<T> internal constructor(
         bConfirm.setOnClickListener {
             dismiss()
             val isDefault = if (defaultItemBinder != null && currentSelection != null) {
-                defaultItemBinder.invoke(currentSelection!!)
+                itemList.find(defaultItemBinder) == currentSelection!!
             } else {
                 false
             }
@@ -140,9 +140,14 @@ class SelectionBottomSheet<T> internal constructor(
             private val binding: SingleChoiceItemBinding by viewBinding()
 
             fun bindData(item: T) {
-                val isDefault = defaultItemBinder?.invoke(item) ?: false
+                val isDefault = if (defaultItemBinder != null && item != null) {
+                    itemList.find(defaultItemBinder) == item
+                } else {
+                    false
+                }
                 if (isDefault) {
                     lastSelectionBinding = binding
+                    onClick(binding.card)
                 }
                 onBindData(item, binding, isDefault)
             }
