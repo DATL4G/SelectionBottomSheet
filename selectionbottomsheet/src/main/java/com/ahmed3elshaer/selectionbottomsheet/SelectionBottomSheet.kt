@@ -21,6 +21,7 @@ class SelectionBottomSheet<T> internal constructor(
     private val title: String,
     private val selectionItemBinder: (item: T) -> String,
     private val selectionCallback: (item: T) -> Unit,
+    private val defaultItemConfirmable: Boolean,
     private val defaultItemBinder: ((T) -> Boolean)?,
     private val confirmCallback: (item: T?) -> Unit,
     private val confirmText: String?,
@@ -128,7 +129,7 @@ class SelectionBottomSheet<T> internal constructor(
             } else {
                 false
             }
-            confirmCallback.invoke(if (isDefault) null else currentSelection)
+            confirmCallback.invoke(if (isDefault && !defaultItemConfirmable) null else currentSelection)
         }
     }
 

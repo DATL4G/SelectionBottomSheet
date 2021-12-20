@@ -29,6 +29,7 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
     private var title: String = String()
     private var selectionItemBinder: (item: T) -> String = { String() }
     private var callback: (item: T) -> Unit = {}
+    private var defaultItemConfirmable: Boolean = false
     private var defaultItemBinder: ((T) -> Boolean)? = null
     private var confirmCallback: (item: T?) -> Unit = {}
     private var confirmText: String? = null
@@ -92,6 +93,14 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
 
     fun defaultItem(predicate: (T) -> Boolean) = apply {
         defaultItemBinder = predicate
+    }
+
+    fun defaultItemFirst() = apply {
+        defaultItemBinder = { it != null && itemsList.isNotEmpty() && it == itemsList.first() }
+    }
+
+    fun defaultItemConfirmable(confirmable: Boolean = true) = apply {
+        defaultItemConfirmable = confirmable
     }
 
     fun confirmListener(listener: (item: T?) -> Unit) = apply {
@@ -171,6 +180,7 @@ class SelectionBuilder<T>(private val fragmentManager: FragmentManager) {
         title,
         selectionItemBinder,
         callback,
+        defaultItemConfirmable,
         defaultItemBinder,
         confirmCallback,
         confirmText,
