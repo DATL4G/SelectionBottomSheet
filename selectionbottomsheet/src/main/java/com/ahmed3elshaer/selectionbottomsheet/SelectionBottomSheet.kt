@@ -53,6 +53,9 @@ class SelectionBottomSheet<T> internal constructor(
             ExpandState.ExpandOnTv -> if (requireContext().packageManager.isTelevision()) {
                 dialog?.setOnShowListener { it.expand() }
             }
+            is ExpandState.ExpandCustom -> if (expandState.predicate.invoke()) {
+                dialog?.setOnShowListener { it.expand() }
+            }
             else -> { }
         }
 
