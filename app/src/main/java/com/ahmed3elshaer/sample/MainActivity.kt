@@ -2,12 +2,10 @@ package com.ahmed3elshaer.sample
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.ahmed3elshaer.sample.databinding.ActivityMainBinding
-import com.ahmed3elshaer.selectionbottomsheet.SelectionBuilder
 import com.ahmed3elshaer.selectionbottomsheet.selectionBottomSheet
 
 class MainActivity : AppCompatActivity() {
@@ -37,11 +35,13 @@ class MainActivity : AppCompatActivity() {
         //You should pass your type of model to the Builder Class first
         selectionBottomSheet<SelectionModel> {
             list(selectionList)
-            dragIndicatorColor(ContextCompat.getColor(this@MainActivity, R.color.colorWhite))
+            dragIndicatorColor(ContextCompat.getColor(this@MainActivity, R.color.colorBlack))
             title("Title")
+            titleColor(ContextCompat.getColor(this@MainActivity, R.color.colorBlack))
             itemBinder { it.title }
             confirmText("Apply")
-            itemColor(ContextCompat.getColor(this@MainActivity, R.color.colorWhite))
+            defaultItemConfirmable(false)
+            itemColor(ContextCompat.getColor(this@MainActivity, R.color.colorBlack))
             selectionColor(ContextCompat.getColor(this@MainActivity, R.color.colorGreen))
             selectionDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_baseline_check_circle_24))
             defaultItem {
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                     Log.e("Confirmed ", it.toString())
                 }
             }
-        }
+        }.show(this)
     }
 
     data class SelectionModel(val title: String, val id: String)
