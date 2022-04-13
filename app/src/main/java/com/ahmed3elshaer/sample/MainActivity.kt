@@ -4,22 +4,30 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.ahmed3elshaer.sample.databinding.ActivityMainBinding
 import com.ahmed3elshaer.selectionbottomsheet.selectionBottomSheet
 
 class MainActivity : AppCompatActivity() {
 
-    private val binding: ActivityMainBinding by viewBinding()
+    private var _binding: ActivityMainBinding? = null
+    private val binding: ActivityMainBinding
+        get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
         binding.fab.setOnClickListener {
             renderSelectionSheet()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private fun renderSelectionSheet() {

@@ -11,14 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.ahmed3elshaer.selectionbottomsheet.databinding.SelectionBottomSheetBinding
 import com.ahmed3elshaer.selectionbottomsheet.databinding.SingleChoiceItemBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
 
-    private val binding: SelectionBottomSheetBinding by viewBinding()
+    private var _binding: SelectionBottomSheetBinding? = null
+    private val binding: SelectionBottomSheetBinding
+        get() = _binding!!
     private lateinit var data: SelectData<T>
     private lateinit var adapter: SelectAdapter
     private var currentSelection: T? = null
@@ -48,7 +49,8 @@ class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
             }
             else -> { }
         }
-        return inflater.inflate(R.layout.selection_bottom_sheet, container, false)
+        _binding = SelectionBottomSheetBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
@@ -82,6 +84,11 @@ class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     fun checkConfirmable(): Unit = with(binding) {
         confirm.isEnabled = currentSelection != null
     }
@@ -112,9 +119,12 @@ class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
         private var lastSelectionBinding: SingleChoiceItemBinding? = null
 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-            val binding: SingleChoiceItemBinding by viewBinding()
+            var _binding: SingleChoiceItemBinding? = null
+            val binding: SingleChoiceItemBinding
+                get() = _binding!!
 
             init {
+                _binding = SingleChoiceItemBinding.bind(itemView)
                 binding.card.setOnClickListener(this)
             }
 
