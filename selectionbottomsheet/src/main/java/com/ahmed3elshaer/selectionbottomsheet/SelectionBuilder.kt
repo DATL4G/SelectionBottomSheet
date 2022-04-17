@@ -5,8 +5,10 @@ import android.graphics.drawable.Drawable
 import android.view.Gravity
 import androidx.annotation.ColorInt
 import androidx.annotation.GravityInt
+import java.security.SecureRandom
 
 class SelectionBuilder<T> {
+    private val id: String = SecureRandom().uuid()
     private var itemsList: List<T> = mutableListOf()
     private var title: String = String()
     private var itemBinder: (item: T) -> String = { it.toString() }
@@ -113,27 +115,30 @@ class SelectionBuilder<T> {
         expandState = state
     }
 
-    fun build() = SelectionBottomSheet.newInstance(
-        SelectData(
-            dragIndicatorColor,
-            title,
-            titleColor,
-            titleGravity,
-            itemsList,
-            itemColor,
-            selectionColor,
-            selectionDrawable,
-            defaultItemConfirmable,
-            confirmText,
-            confirmTextColor,
-            confirmBackgroundColor,
-            confirmDisabledTextColor,
-            confirmDisabledBackgroundColor,
-            expandState,
-            itemBinder,
-            selectionCallback,
-            defaultItemBinder,
-            confirmCallback
-        ),
-    )
+    fun build(): SelectionBottomSheet<T> {
+        SelectData.itemList[id] = itemsList
+        SelectData.selectionDrawable[id] = selectionDrawable
+        SelectData.expandState[id] = expandState
+        return SelectionBottomSheet.newInstance(
+            SelectData(
+                id,
+                dragIndicatorColor,
+                title,
+                titleColor,
+                titleGravity,
+                itemColor,
+                selectionColor,
+                defaultItemConfirmable,
+                confirmText,
+                confirmTextColor,
+                confirmBackgroundColor,
+                confirmDisabledTextColor,
+                confirmDisabledBackgroundColor,
+                itemBinder,
+                selectionCallback,
+                defaultItemBinder,
+                confirmCallback
+            ),
+        )
+    }
 }

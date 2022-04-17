@@ -1,6 +1,7 @@
 package com.ahmed3elshaer.selectionbottomsheet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ahmed3elshaer.selectionbottomsheet.databinding.SelectionBottomSheetBinding
 import com.ahmed3elshaer.selectionbottomsheet.databinding.SingleChoiceItemBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textview.MaterialTextView
 
 class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
 
@@ -24,11 +27,17 @@ class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
     private lateinit var adapter: SelectAdapter
     private var currentSelection: T? = null
 
+    val title: MaterialTextView?
+        get() = _binding?.title
+
+    val confirmButton: MaterialButton?
+        get() = _binding?.confirm
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getParcelable<SelectData<T>>(SELECT_DATA_KEY)?.also {
             data = it
-            adapter = SelectAdapter(data.itemList)
+            adapter = SelectAdapter((SelectData.itemList[data.id] as? List<T>?) ?: listOf())
         } ?: run {
             adapter = SelectAdapter(emptyList())
         }
@@ -39,12 +48,12 @@ class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        when (data.expandState) {
+        when (SelectData.expandState[data.id]) {
             ExpandState.Expanded -> dialog?.setOnShowListener { it.expand() }
             ExpandState.ExpandOnTv -> if ((context ?: activity ?: requireContext()).packageManager.isTelevision()) {
                 dialog?.setOnShowListener { it.expand() }
             }
-            is ExpandState.ExpandCustom -> if ((data.expandState as? ExpandState.ExpandCustom)?.predicate?.invoke() == true) {
+            is ExpandState.ExpandCustom -> if ((SelectData.expandState[data.id] as? ExpandState.ExpandCustom)?.predicate?.invoke() == true) {
                 dialog?.setOnShowListener { it.expand() }
             }
             else -> { }
@@ -93,9 +102,14 @@ class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
         confirm.isEnabled = currentSelection != null
     }
 
+    fun confirmRequestFocus(): Unit = with(binding) {
+        confirm.requestFocus()
+    }
+
     fun isDefault(item: T?): Boolean {
-        return if (data.defaultItemBinder != null && item != null) {
-            data.itemList.find(data.defaultItemBinder!!) == item
+        val binder = data.defaultItemBinder
+        return if (binder != null && item != null) {
+            (SelectData.itemList[data.id] as? List<T>?)?.find(binder) == item
         } else {
             false
         }
@@ -169,12 +183,13 @@ class SelectionBottomSheet<T>() : BottomSheetDialogFragment() {
 
             binding.name.text = data.itemBinder(item)
             binding.name.setTextColor(data.itemColor)
-            binding.icon.setImageDrawable(data.selectionDrawable)
+            binding.icon.setImageDrawable(SelectData.selectionDrawable[data.id])
             binding.icon.clearTint()
 
             if (isDefault(item)) {
                 lastSelectionBinding = binding
                 onClick(binding.card)
+                confirmRequestFocus()
             }
         }
     }

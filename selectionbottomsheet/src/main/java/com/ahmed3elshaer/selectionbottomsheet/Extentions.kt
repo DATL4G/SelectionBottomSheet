@@ -9,6 +9,11 @@ import android.widget.ImageView
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.util.*
+import kotlin.experimental.and
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.log
 
 fun <T> selectionBottomSheet(builder: SelectionBuilder<T>.() -> Unit) = SelectionBuilder<T>().apply(builder).build()
 
@@ -49,6 +54,31 @@ internal fun DialogInterface.expand() {
         sheetInternal?.let { sheet ->
             sheet.post {
                 BottomSheetBehavior.from(sheet).state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+    }
+}
+
+internal fun Random.uuid(): String {
+    val alphabet = "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+    val size = 10
+    val mask: Int = (2 shl floor(log((alphabet.size - 1).toDouble(), 2.0)).toInt()) - 1
+    val step: Int = ceil(1.6 * mask * size / alphabet.size).toInt()
+    val idBuilder = StringBuilder()
+
+    while (true) {
+        val bytes = ByteArray(step)
+        this.nextBytes(bytes)
+
+        for(i in 0 until step) {
+            val alphabetIndex: Int = (bytes[i] and mask.toByte()).toInt()
+
+            if(alphabetIndex < alphabet.size) {
+                idBuilder.append(alphabet[alphabetIndex])
+
+                if(idBuilder.length == size) {
+                    return idBuilder.toString()
+                }
             }
         }
     }

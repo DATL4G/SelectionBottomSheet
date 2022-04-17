@@ -9,14 +9,13 @@ import kotlinx.parcelize.RawValue
 
 @Parcelize
 internal data class SelectData<T> internal constructor(
+    val id: String,
     val dragIndicatorColor: Int? = null,
     val title: String,
     val titleColor: Int = Color.BLACK,
     val titleGravity: Int = Gravity.CENTER,
-    val itemList: @RawValue List<T> = emptyList(),
     val itemColor: Int = Color.BLACK,
     val selectionColor: Int = Color.GREEN,
-    val selectionDrawable: @RawValue Drawable? = null,
     val defaultItemConfirmable: Boolean = true,
     val confirmText: String,
     val confirmTextColor: Int = Color.WHITE,
@@ -24,9 +23,14 @@ internal data class SelectData<T> internal constructor(
     val confirmDisabledTextColor: Int = Color.BLACK,
     val confirmDisabledBackgroundColor: Int = Color.WHITE,
 
-    val expandState: @RawValue ExpandState = ExpandState.Default,
-    val itemBinder: (item: T) -> String = { it.toString() },
-    val selectionCallback: (item: T) -> Unit = { },
-    val defaultItemBinder: ((item: T) -> Boolean)? = null,
-    val confirmCallback: (item: T?) -> Unit = { }
-): Parcelable
+    val itemBinder: (item: T) -> String,
+    val selectionCallback: (item: T) -> Unit,
+    val defaultItemBinder: ((item: T) -> Boolean)?,
+    val confirmCallback: (item: T?) -> Unit
+): Parcelable {
+    companion object {
+        internal val itemList: MutableMap<String, List<Any?>> = mutableMapOf()
+        internal val selectionDrawable: MutableMap<String, Drawable?> = mutableMapOf()
+        internal val expandState: MutableMap<String, ExpandState> = mutableMapOf()
+    }
+}
